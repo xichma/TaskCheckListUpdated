@@ -1,0 +1,77 @@
+<odoo>
+    <data>
+        <!--    custom form view task project-->
+        <record id="custom_form_project_task" model="ir.ui.view">
+            <field name="name">Add checklist</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_form2"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='extra_info']" position="after">
+                    <page name="checklist_info" style="color:blue ! important;" string="Checklist">
+                        <field name="info_checklist">
+                            <tree editable="bottom" decoration-success="status=='done'"
+                                  decoration-danger="status=='cancel'" decoration-info="status=='progress'">
+                                <field name="description" style="color:blue ! important;" string="Description"/>
+                                <field name="status" style="color:blue ! important;" string="Status"/>
+                                <button name="do_accept" string="Done" type="object" icon="fa-check text-success"
+                                        attrs="{'invisible':['|',('status','=','done'),('status','=','cancel')]}"
+                                        style="color:blue ! important;"/>
+                                <button name="do_cancel" string="Cancel" type="object"
+                                        icon="fa-times-circle text-danger"
+                                        attrs="{'invisible':['|',('status','=','done'),('status','=','cancel')]}"/>
+                                <button name="do_progress" string="progress" type="object"
+                                        icon="fa-play"
+                                        attrs="{'invisible':[('status','!=',False)]}"/>
+                                <button name="do_set_to" string="Refresh" type="object"
+                                        icon="fa-refresh"
+                                        attrs="{'invisible':[('status','!=','cancel')]}"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+
+                <xpath expr="//page[@name='description_page']" position="after">
+                    <page name="time_sheets" string="Timesheets">
+                    </page>
+                </xpath>
+                <xpath expr="//page[@name='checklist_info']" position="before">
+                    <page name="test_cases" string="Test Cases">
+                    </page>
+                </xpath>
+
+                <xpath expr="//field[@name='tag_ids']" position="after">
+                    <field name="maximum_rate" string="Max" invisible="1"
+                           style="width:300px;height:225px;cursor:pointer;color:blue ! important;"/>
+
+                    <field name="progress_rate" string="Checklist Progress" widget="gauge"
+                           options="{'done': 'maximum_rate'}"
+                           style="width:300px;height:225px;cursor:pointer;color:blue ! important;"/>
+                </xpath>
+            </field>
+        </record>
+        <!--        show up progress on tree view task project-->
+        <record id="custom_tree_view_project_task" model="ir.ui.view">
+            <field name="name">Show up progress</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_tree2"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='stage_id']" position="replace">
+                    <field name="progress_rate" widget="progressbar"/>
+                </xpath>
+
+            </field>
+        </record>
+        <record model="ir.ui.view" id="task_project_kanban_view_extened">
+            <field name="name">task kanban extended</field>
+            <field name="inherit_id" ref="project.view_task_kanban"/>
+            <field name="model">project.task</field>
+            <field name="arch" type="xml">
+                <xpath expr='//kanban/templates/t/div/div/div[2]' position="after">
+                    <field name="progress_rate" widget="percentpie"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
